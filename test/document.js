@@ -22,7 +22,7 @@ module.exports.tests.properties = function(test, common) {
 // should contain the correct field definitions
 module.exports.tests.fields = function(test, common) {
   var fields = ['source', 'layer', 'name', 'phrase', 'address_parts',
-    'parent', 'center_point', 'polygon', 'bounding_box', 'source_id', 'category',
+    'parent', 'center_point', shapeType, 'bounding_box', 'source_id', 'category',
     'population', 'popularity', 'addendum'];
   test('fields specified', function(t) {
     t.deepEqual(Object.keys(schema.properties), fields);
@@ -213,7 +213,7 @@ module.exports.tests.dynamic_disabled = function(test, common) {
 module.exports.tests._source = function(test, common) {
   test('_source', function(t) {
     t.ok(Array.isArray(schema._source.excludes), 'exclusions specified');
-    t.equal(schema._source.excludes[0], 'polygon', 'exclude polygon');
+    t.equal(schema._source.excludes[0], shapeType, 'exclude' + shapeType);
     t.equal(schema._source.excludes[1], 'phrase', 'exclude phrase');
     t.end();
   });
@@ -230,13 +230,24 @@ module.exports.all = function (tape, common) {
   }
 };
 
-// polygon field analysis
-module.exports.tests.polygon_analysis = function(test) {
+// [shapeType] field analysis
+module.exports.tests.shapeType_analysis = function(test) {
 
-  test('polygon field analysis', function(t) {
-    t.equal(Object.keys(schema.properties.polygon).length === 1, true, 'polygon has one property');
-    t.equal( Object.keys(schema.properties.polygon)[0], 'type');
-    t.deepEqual( Object.values(schema.properties.polygon)[0], 'geo_shape');
+  let shapeKey;
+  let shapeValue;
+
+  if(shapeType === 'shape'){
+    shapeKey = Object.keys(schema.properties.shape);
+    shapeValue = Object.values(schema.properties.shape);
+  }else if(shapeType === 'polygon'){
+    shapeKey = Object.keys(schema.properties.polygon);
+    shapeValue = Object.values(schema.properties.polygon);
+  }
+
+  test(shapeType + 'field analysis', function(t) {
+    t.equal(shapeKey.length === 1, true, shapeType + 'has one property');
+    t.equal(shapeKey[0], 'type');
+    t.deepEqual(shapeValue[0], 'geo_shape');
     t.end();
   });
 };

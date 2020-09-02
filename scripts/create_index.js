@@ -6,20 +6,13 @@ const SUPPORTED_ES_VERSIONS = '>=7.4.2';
 const cli = require('./cli');
 const schema = require('../schema');
 
-// check if the patch to rename the geo_shape property has been applied. If not exit.
-if(schema.mappings.properties.polygon == null){
-  console.error("The polygon patch has not been applied. Please apply the schema.patch and try again.");
-  process.exit(1);
+// Check that the shape_type property has been defined in the schema.js file
+// This must be set to either 'shape' or 'polygon', if not exit
+if(shapeType === 'shape' || shapeType === 'polygon'){
+  console.log('\n Creating an ES index with schema shape type: ' + shapeType + '.');
 }else{
-  console.log("\n The schema.patch has been applied, the polygon geo_shape is present.");
-}
-
-// check that the polygon has been excluded from the _source as it is too big.
-if(schema.mappings._source.excludes[0] !== 'polygon'){
-  console.error("The polygon has not been excluded from the _source. Please add this to the _source:excludes property and try again.");
+  console.error("The global.shapeType property in the schema.js file has not been correctly configured. Please set this value to 'shape' or 'polygon' and try again.");
   process.exit(1);
-}else{
-  console.log("\n The polygon has been excluded from the _source.");
 }
 
 cli.header("create index");
