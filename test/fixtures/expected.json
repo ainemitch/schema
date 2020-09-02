@@ -2400,7 +2400,7 @@
       "center_point": {
         "type": "geo_point"
       },
-      "shape": {
+      "polygon": {
         "type": "geo_shape"
       },
       "bounding_box": {
@@ -2467,7 +2467,7 @@
     ],
     "_source": {
       "excludes": [
-        "shape",
+        "polygon",
         "phrase"
       ]
     },

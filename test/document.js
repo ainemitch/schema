@@ -22,7 +22,7 @@ module.exports.tests.properties = function(test, common) {
 // should contain the correct field definitions
 module.exports.tests.fields = function(test, common) {
   var fields = ['source', 'layer', 'name', 'phrase', 'address_parts',
-    'parent', 'center_point', 'shape', 'bounding_box', 'source_id', 'category',
+    'parent', 'center_point', 'polygon', 'bounding_box', 'source_id', 'category',
     'population', 'popularity', 'addendum'];
   test('fields specified', function(t) {
     t.deepEqual(Object.keys(schema.properties), fields);
@@ -209,11 +209,11 @@ module.exports.tests.dynamic_disabled = function(test, common) {
   });
 };
 
-// shape field should be exluded from _source because it's massive
+// polygon field should be excluded from _source because it's massive
 module.exports.tests._source = function(test, common) {
   test('_source', function(t) {
     t.ok(Array.isArray(schema._source.excludes), 'exclusions specified');
-    t.equal(schema._source.excludes[0], 'shape', 'exclude shape');
+    t.equal(schema._source.excludes[0], 'polygon', 'exclude polygon');
     t.equal(schema._source.excludes[1], 'phrase', 'exclude phrase');
     t.end();
   });
@@ -228,4 +228,15 @@ module.exports.all = function (tape, common) {
   for( var testCase in module.exports.tests ){
     module.exports.tests[testCase](test, common);
   }
+};
+
+// polygon field analysis
+module.exports.tests.polygon_analysis = function(test) {
+
+  test('polygon field analysis', function(t) {
+    t.equal(Object.keys(schema.properties.polygon).length === 1, true, 'polygon has one property');
+    t.equal( Object.keys(schema.properties.polygon)[0], 'type');
+    t.deepEqual( Object.values(schema.properties.polygon)[0], 'geo_shape');
+    t.end();
+  });
 };
